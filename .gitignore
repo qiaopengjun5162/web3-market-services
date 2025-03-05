@@ -23,3 +23,11 @@ go.work.sum
 
 # env file
 .env
+
+.idea
+.vscode
+.DS_Store
+node_modules
+dist
+
+web3-market-services

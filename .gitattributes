@@ -1,0 +1,3 @@
+*.sh text eol=lf
+# 在 .gitattributes 文件中，*.sh text eol=lf 是一条配置规则，用于指定所有以 .sh 结尾的文件（通常是 Shell 脚本文件）应该被视为文本文件，
+# 并且统一使用 LF（Line Feed）作为换行符。
