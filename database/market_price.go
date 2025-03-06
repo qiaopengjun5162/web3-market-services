@@ -12,12 +12,12 @@ type MarketPrice struct {
 	AssetName string    `gorm:"column:asset_name" json:"asset_name"`
 	PriceUsdt string    `gorm:"column:price_usdt" json:"price_usdt"`
 	Volume    string    `gorm:"column:volume" json:"volume"`
-	Rate      string    `gorm:"column:volume" json:"rate"`
+	Rate      string    `gorm:"column:rate" json:"rate"`
 	Timestamp uint64
 }
 
 type MarketPriceViewer interface {
-	QueryMarketPriceByAsset() ([]*MarketPrice, error)
+	QueryMarketPriceByAsset(assetName string) ([]*MarketPrice, error)
 }
 
 type MarketPriceDB interface {
@@ -38,7 +38,13 @@ func NewMarketPriceDB(db *gorm.DB) MarketPriceDB {
 	}
 }
 
-func (m *marketPriceDB) QueryMarketPriceByAsset() ([]*MarketPrice, error) {
+func (m *marketPriceDB) QueryMarketPriceByAsset(assetName string) ([]*MarketPrice, error) {
+	if assetName == "" {
+		return nil, errors.New("assetName is empty")
+	}
+	if assetName != "all" {
+		return nil, errors.New("assetName is not all")
+	}
 	var marketPriceList []*MarketPrice
 	if err := m.gorm.Table("market_price").Find(&marketPriceList).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

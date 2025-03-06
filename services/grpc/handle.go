@@ -1,4 +1,4 @@
-package services
+package grpc
 
 import (
 	"context"
@@ -58,7 +58,7 @@ func (ms *MarketRpcServices) GetMarketPrice(ctx context.Context, req *market.Mar
 	var marketPriceReturns []*market.MarketPrice
 	var coinRateReturns []*market.OfficialCoinRate
 
-	assetPriceList, err := ms.db.MarketPrice.QueryMarketPriceByAsset()
+	assetPriceList, err := ms.db.MarketPrice.QueryMarketPriceByAsset("all")
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (ms *MarketRpcServices) GetMarketPrice(ctx context.Context, req *market.Mar
 		}
 		marketPriceReturns = append(marketPriceReturns, mItem)
 	}
-	coinRateList, err := ms.db.OfficialCoinRate.QueryOfficialCoinRateByAsset()
+	coinRateList, err := ms.db.OfficialCoinRate.QueryOfficialCoinRateByAsset("all")
 	if err != nil {
 		return nil, err
 	}

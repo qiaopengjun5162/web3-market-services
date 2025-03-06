@@ -15,12 +15,12 @@ type OfficialCoinRate struct {
 	Timestamp uint64
 }
 
-type OfficialCoinRateView interface {
-	QueryOfficialCoinRateByAsset() ([]*OfficialCoinRate, error)
+type OfficialCoinRateViewer interface {
+	QueryOfficialCoinRateByAsset(assetName string) ([]*OfficialCoinRate, error)
 }
 
 type OfficialCoinRateDB interface {
-	OfficialCoinRateView
+	OfficialCoinRateViewer
 
 	StoreOfficialCoinRate([]*OfficialCoinRate) error
 	//GetOfficialCoinRateByAssetName(assetName string) ([]*OfficialCoinRate, error)
@@ -36,7 +36,13 @@ func NewOfficialCoinRateDB(db *gorm.DB) OfficialCoinRateDB {
 	}
 }
 
-func (o *officialCoinRateDB) QueryOfficialCoinRateByAsset() ([]*OfficialCoinRate, error) {
+func (o *officialCoinRateDB) QueryOfficialCoinRateByAsset(assetName string) ([]*OfficialCoinRate, error) {
+	if assetName == "" {
+		return nil, errors.New("assetName is empty")
+	}
+	if assetName != "all" {
+		return nil, errors.New("assetName is not all")
+	}
 	var officialCoinRateList []*OfficialCoinRate
 	err := o.gorm.Table("official_coin_rate").Find(&officialCoinRateList).Error
 	if err != nil {

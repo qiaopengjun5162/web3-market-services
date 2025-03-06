@@ -9,6 +9,8 @@ import (
 type Config struct {
 	Migrations string
 	RpcServer  ServerConfig
+	RestServer ServerConfig
+	Metrics    ServerConfig
 	MasterDB   DBConfig
 	SlaveDB    DBConfig
 }
@@ -32,6 +34,14 @@ func NewConfig(ctx *cli.Context) Config {
 		RpcServer: ServerConfig{
 			Host: ctx.String(flags.RpcHostFlag.Name),
 			Port: ctx.Int(flags.RpcPortFlag.Name),
+		},
+		RestServer: ServerConfig{
+			Host: ctx.String(flags.HttpHostFlag.Name),
+			Port: ctx.Int(flags.HttpPortFlag.Name),
+		},
+		Metrics: ServerConfig{
+			Host: ctx.String(flags.MetricsHostFlag.Name),
+			Port: ctx.Int(flags.MetricsPortFlag.Name),
 		},
 		MasterDB: DBConfig{
 			Host:     ctx.String(flags.MasterDbHostFlag.Name),

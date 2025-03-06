@@ -30,6 +30,34 @@ var (
 		Required: true,
 	}
 
+	// HttpHostFlag Http Service
+	HttpHostFlag = &cli.StringFlag{
+		Name:     "http-host",
+		Usage:    "The host of the http",
+		EnvVars:  prefixEnvVars("HTTP_HOST"),
+		Required: true,
+	}
+	HttpPortFlag = &cli.IntFlag{
+		Name:     "http-port",
+		Usage:    "The port of the http",
+		EnvVars:  prefixEnvVars("HTTP_PORT"),
+		Required: true,
+	}
+
+	// MetricsHostFlag RPC Service
+	MetricsHostFlag = &cli.StringFlag{
+		Name:     "metric-host",
+		Usage:    "The host of the metric",
+		EnvVars:  prefixEnvVars("METRIC_HOST"),
+		Required: true,
+	}
+	MetricsPortFlag = &cli.IntFlag{
+		Name:     "metric-port",
+		Usage:    "The port of the metric",
+		EnvVars:  prefixEnvVars("METRIC_PORT"),
+		Required: true,
+	}
+
 	// MasterDb Flags
 	MasterDbHostFlag = &cli.StringFlag{
 		Name:     "master-db-host",
@@ -94,6 +122,8 @@ var requireFlags = []cli.Flag{
 	MigrationsFlag,
 	RpcHostFlag,
 	RpcPortFlag,
+	HttpHostFlag,
+	HttpPortFlag,
 	MasterDbHostFlag,
 	MasterDbPortFlag,
 	MasterDbUserFlag,

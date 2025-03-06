@@ -13,7 +13,8 @@ import (
 	"github.com/qiaopengjun5162/web3-market-services/config"
 	"github.com/qiaopengjun5162/web3-market-services/database"
 	flags2 "github.com/qiaopengjun5162/web3-market-services/flags"
-	"github.com/qiaopengjun5162/web3-market-services/services"
+	"github.com/qiaopengjun5162/web3-market-services/services/grpc"
+	"github.com/qiaopengjun5162/web3-market-services/services/rest"
 )
 
 // Semantic holds the textual version string for major.minor.patch.
@@ -43,7 +44,7 @@ func runRpc(ctx *cli.Context, shutdown context.CancelCauseFunc) (cliapp.Lifecycl
 	fmt.Println("running rpc server...")
 	cfg := config.NewConfig(ctx)
 
-	grpcServerCfg := &services.MarketRpcConfig{
+	grpcServerCfg := &grpc.MarketRpcConfig{
 		Host: cfg.RpcServer.Host,
 		Port: cfg.RpcServer.Port,
 	}
@@ -53,7 +54,7 @@ func runRpc(ctx *cli.Context, shutdown context.CancelCauseFunc) (cliapp.Lifecycl
 		log.Error("Failed to create db", "err", err)
 		return nil, err
 	}
-	return services.NewMarketRpcService(grpcServerCfg, db)
+	return grpc.NewMarketRpcService(grpcServerCfg, db)
 }
 
 func runMigrations(ctx *cli.Context) error {
@@ -74,6 +75,12 @@ func runMigrations(ctx *cli.Context) error {
 	return db.ExecuteSQLMigration(cfg.Migrations)
 }
 
+func runRestApi(ctx *cli.Context, shutdown context.CancelCauseFunc) (cliapp.Lifecycle, error) {
+	log.Info("running rest api server...")
+	cfg := config.NewConfig(ctx)
+	return rest.NewApi(ctx.Context, &cfg)
+}
+
 func NewCli(GitCommit string, gitDate string) *cli.App {
 	flags := flags2.Flags
 	return &cli.App{
@@ -83,6 +90,13 @@ func NewCli(GitCommit string, gitDate string) *cli.App {
 		Version:              withCommit(GitCommit, gitDate),
 		EnableBashCompletion: true, // Boolean to enable bash completion commands
 		Commands: []*cli.Command{
+			{
+				Name:        "api",
+				Usage:       "Start rest api server",
+				Description: "Start rest api server",
+				Flags:       flags,
+				Action:      cliapp.LifecycleCmd(runRestApi),
+			},
 			{
 				Name:        "rpc",
 				Usage:       "Start rpc server",
